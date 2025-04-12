@@ -16,8 +16,7 @@ function App() {
 
   const openai = new OpenAI({
     apiKey:
-      process.env.VITE_OPENAI_API_KEY ||
-      "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",
+    process.env.REACT_APP_API_VITE_OPENAI_API_KEY,
     dangerouslyAllowBrowser: true,
   });
 
