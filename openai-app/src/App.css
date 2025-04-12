@@ -1,0 +1,86 @@
+body {
+  background-color: #f1f8f6;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.input-box {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #6fb1a0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.submit-button:disabled {
+  background-color: #a0c6bd;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: red;
+  margin-top: 10px;
+}
+
+.response-box {
+  margin-top: 30px;
+  padding: 20px;
+  width: 60%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-size: 18px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.typing::after {
+  content: '|';
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.loader {
+  border: 4px solid #e0f0ec;
+  border-top: 4px solid #6fb1a0;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+.spinner-wrapper {
+  margin-top: 20px;
+  text-align: center;
+  color: #555;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
