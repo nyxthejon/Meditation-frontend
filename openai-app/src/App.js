@@ -49,7 +49,7 @@ function App() {
       setApiResponse(message);
 
       const audioResponse = await axios.post(
-        "http://localhost:5000/api/elevenlabs",
+        "https://meditation-backend2.onrender.com/api/elevenlabs",
         { text: message },
         { responseType: "arraybuffer" }
       );
