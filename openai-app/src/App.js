@@ -4,16 +4,18 @@ import axios from "axios";
 import "./App.css"; 
 
 function App() {
-  const [inputText, setInputText] = useState("");
-  const [apiResponse, setApiResponse] = useState("");
+  const [inputText, setInputText] = useState('');
+  const [apiResponse, setApiResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [displayText, setDisplayText] = useState("");
+  const [displayText, setDisplayText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const audioRef = useRef(null);
   const [audioLoading, setAudioLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioLoaded, setAudioLoaded] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const openai = new OpenAI({
     apiKey:
@@ -73,12 +75,13 @@ function App() {
         audioRef.current.onloadeddata = () => {
           setAudioLoading(false);
           setAudioLoaded(true);
+          setDuration(audioRef.current.duration);
           audioRef.current.play();
         };
       }
     } catch (err) {
-      console.error("Error:", err);
-      setError(err.message || "An error occurred.");
+      console.error('Error:', err);
+      setError(err.message || 'An error occurred.');
       setAudioLoading(false);
     } finally {
       setLoading(false);
@@ -108,16 +111,19 @@ function App() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-  
+
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
-  
+    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
-  
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+
     return () => {
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
     };
   }, []);
   
@@ -132,6 +138,12 @@ function App() {
     }
   };
 
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  };
+
   return (
     <div className="app-container">
       <h1>Meditation Guide</h1>
@@ -142,26 +154,41 @@ function App() {
         placeholder="Share your feelings..."
         className="input-box"
       />
-    <button onClick={handleButtonClick} disabled={loading} className="submit-button">
-      {loading ? (
-        <div className="loader-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-          <div className="loader"></div>
-          <span>Creating your unique session...</span>
+      <button onClick={handleButtonClick} disabled={loading} className="submit-button">
+        {loading ? (
+          <div className="loader-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <div className="loader"></div>
+            <span>Creating your unique session...</span>
+          </div>
+        ) : (
+          'Receive personalized meditation'
+        )}
+      </button>
+
+      {audioLoaded && (
+        <div className="audio-controls">
+          <div className="progress-bar">
+            <input
+              type="range"
+              min="0"
+              max={duration}
+              value={currentTime}
+              onChange={(e) => {
+                audioRef.current.currentTime = Number(e.target.value);
+                setCurrentTime(Number(e.target.value));
+              }}
+            />
+            <div className="time-display">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+          </div>
+          <button onClick={handleToggleAudio} className="pause-button">
+            {isPlaying ? 'Pause' : 'Play'}
+          </button>
         </div>
-      ) : (
-        'Receive personalized meditation'
       )}
-    </button>
-    {audioLoaded && (
-        <button onClick={handleToggleAudio} className="pause-button">
-          {isPlaying ? 'Pause voice' : 'Unpause voice'}
-        </button>
-      )}      {error && <p className="error-text">{error}</p>}
-      {/* {displayText && (
-        <div className={`response-box ${isTyping ? 'typing' : ''}`}>
-          {displayText}
-        </div>
-      )} */}
+
+      {error && <p className="error-text">{error}</p>}
       <audio ref={audioRef} style={{ display: 'none' }} />
     </div>
   );

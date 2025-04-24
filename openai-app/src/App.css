@@ -31,6 +31,65 @@ body {
   cursor: pointer;
 }
 
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 40px;
+  background: #ffffff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pause-button {
+  background-color: #6fb1a0;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.pause-button:hover {
+  background-color: #5da08f;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.progress-bar input[type="range"] {
+  flex: 1;
+  accent-color: #6fb1a0;
+  height: 4px;
+  border-radius: 4px;
+  background-color: #e0f0ec;
+  cursor: pointer;
+}
+
+.time-display {
+  font-size: 14px;
+  color: #333;
+  min-width: 80px;
+  text-align: right;
+}
+
+
 .submit-button:disabled {
   background-color: #a0c6bd;
   cursor: not-allowed;
