@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import OpenAI from "openai";
 import axios from "axios";
-import "./App.css"; // make sure to create this file for styles
+import "./App.css"; 
+import { FaPause, FaPlay } from 'react-icons/fa';
 
 function App() {
   const [inputText, setInputText] = useState("");
@@ -42,6 +43,16 @@ function App() {
             content:
               "You are a compassionate and calming meditation guide. The user will express their current problems, stresses, worries, emotions, or challenges. Respond by providing a short, soothing meditation practice, mindfulness guidance, or thoughtful advice specifically tailored to help them cope with what they're experiencing. Speak directly to the user in a gentle, reassuring tone. Respond ONLY with the meditation or mindfulness advice itself, nothing else.",
           },
+          {
+            role: 'system',
+            content:
+              'Format your response as SSML wrapped in <speak> tags. Slow down your speaking rate using <prosody rate="x-slow"> around the entire content. Insert a <break time="3s"/> tag after each complete statement to create a pause of exactly three seconds.'          
+          },
+          {
+            role: 'system',
+            content:
+              'Make the reponse long'          
+          },
         ],
       });
 
@@ -74,50 +85,84 @@ function App() {
     }
   };
 
+  // useEffect(() => {
+  //   if (audioLoaded && apiResponse) {
+  //     setDisplayText("");
+  //     let index = -1;
+  //     setIsTyping(true);
+
+  //     const interval = setInterval(() => {
+  //       if (index < apiResponse.length - 1) {
+  //         setDisplayText((prev) => prev + apiResponse[index]);
+  //         index++;
+  //       } else {
+  //         clearInterval(interval);
+  //         setIsTyping(false);
+  //       }
+  //     }, 50);
+
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [audioLoaded, apiResponse]);
+
   useEffect(() => {
-    if (audioLoaded && apiResponse) {
-      setDisplayText("");
-      let index = -1;
-      setIsTyping(true);
+    const audio = audioRef.current;
+    if (!audio) return;
+  
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+  
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+  
+    return () => {
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+    };
+  }, []);
+  
 
-      const interval = setInterval(() => {
-        if (index < apiResponse.length - 1) {
-          setDisplayText((prev) => prev + apiResponse[index]);
-          index++;
-        } else {
-          clearInterval(interval);
-          setIsTyping(false);
-        }
-      }, 50);
-
-      return () => clearInterval(interval);
+  const handleToggleAudio = () => {
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
     }
-  }, [audioLoaded, apiResponse]);
+  };
 
   return (
-    <div className='app-container'>
+    <div className="app-container">
       <h1>Meditation Guide</h1>
       <input
-        type='text'
+        type="text"
         value={inputText}
         onChange={handleInputChange}
-        placeholder='Share your feelings...'
-        className='input-box'
+        placeholder="Share your feelings..."
+        className="input-box"
       />
-      <button
-        onClick={handleButtonClick}
-        disabled={loading}
-        className='submit-button'
-      >
-        {loading ? <div className='loader'></div> : "Get Meditation Advice"}
-      </button>
-      {error && <p className='error-text'>{error}</p>}
-      {displayText && (
-        <div className={`response-box ${isTyping ? "typing" : ""}`}>
+    <button onClick={handleButtonClick} disabled={loading} className="submit-button">
+      {loading ? (
+        <div className="loader-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <div className="loader"></div>
+          <span>Creating your unique session...</span>
+        </div>
+      ) : (
+        'Receive personalized meditation'
+      )}
+    </button>
+    {audioLoaded && (
+        <button onClick={handleToggleAudio} className="pause-button">
+          {isPlaying ? <FaPause /> : <FaPlay />}
+        </button>
+      )}      {error && <p className="error-text">{error}</p>}
+      {/* {displayText && (
+        <div className={`response-box ${isTyping ? 'typing' : ''}`}>
           {displayText}
         </div>
-      )}
-      <audio ref={audioRef} style={{ display: "none" }} />
+      )} */}
+      <audio ref={audioRef} style={{ display: 'none' }} />
     </div>
   );
 }
