@@ -13,6 +13,7 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const audioRef = useRef(null);
   const [audioLoading, setAudioLoading] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [audioLoaded, setAudioLoaded] = useState(false);
 
   const openai = new OpenAI({
