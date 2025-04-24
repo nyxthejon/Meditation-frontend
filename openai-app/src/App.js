@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import OpenAI from "openai";
 import axios from "axios";
 import "./App.css"; 
-import { FaPause, FaPlay } from 'react-icons/fa';
 
 function App() {
   const [inputText, setInputText] = useState("");
@@ -155,7 +154,7 @@ function App() {
     </button>
     {audioLoaded && (
         <button onClick={handleToggleAudio} className="pause-button">
-          {isPlaying ? <FaPause /> : <FaPlay />}
+          {isPlaying ? 'Pause voice' : 'Unpause voice'}
         </button>
       )}      {error && <p className="error-text">{error}</p>}
       {/* {displayText && (
