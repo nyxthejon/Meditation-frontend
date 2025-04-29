@@ -88,6 +88,12 @@ function App() {
     } finally {
       setLoading(false);
     }
+
+     if (bgAudioRef.current && bgAudioRef.current.paused) {
+         bgAudioRef.current.play().catch(() => {
+           console.warn('Playback prevented—user gesture required');
+         });
+       }
   };
 
   // useEffect(() => {
