@@ -55,7 +55,7 @@ function App() {
           {
             role: 'system',
             content:
-              'Format your response as SSML wrapped in <speak> tags. Slow down your speaking rate using <prosody rate="slow"> around the entire content. Insert a <break time="3s"/> tag after each complete statement to create a pause of exactly three seconds.'          
+              'Format your response as SSML. Insert a <break time="3s"/> tag after each complete statement to create a pause of exactly three seconds.'          
           },
           {
             role: 'system',
