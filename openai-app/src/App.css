@@ -12,6 +12,13 @@ body {
   text-align: center;
 }
 
+.bg-volume-control {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  }
+  
+
 .input-box {
   padding: 10px;
   font-size: 16px;

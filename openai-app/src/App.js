@@ -16,6 +16,8 @@ function App() {
   const [audioLoaded, setAudioLoaded] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const bgAudioRef = useRef(null);
+  const [bgVolume, setBgVolume] = useState(0.1);
 
   const openai = new OpenAI({
     apiKey:
@@ -48,7 +50,7 @@ function App() {
           {
             role: 'system',
             content:
-              'Format your response as SSML wrapped in <speak> tags. Slow down your speaking rate using <prosody rate="x-slow"> around the entire content. Insert a <break time="3s"/> tag after each complete statement to create a pause of exactly three seconds.'          
+              'Format your response as SSML wrapped in <speak> tags. Slow down your speaking rate using <prosody rate="slow"> around the entire content. Insert a <break time="3s"/> tag after each complete statement to create a pause of exactly three seconds.'          
           },
           {
             role: 'system',
@@ -138,6 +140,12 @@ function App() {
     }
   };
 
+  const handleVolumeChange = (e) => {
+    const vol = Number(e.target.value);
+    setBgVolume(vol);
+    if (bgAudioRef.current) bgAudioRef.current.volume = vol;
+  };
+
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60).toString().padStart(2, '0');
@@ -190,6 +198,24 @@ function App() {
 
       {error && <p className="error-text">{error}</p>}
       <audio ref={audioRef} style={{ display: 'none' }} />
+      <audio
+        ref={bgAudioRef}
+        src="/background.mp3"
+        style={{ display: 'none' }}
+      />
+       {/* Background volume slider */}
+       <div className="bg-volume-control">
+        <label htmlFor="bg-volume">🎵</label>
+        <input
+          id="bg-volume"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={bgVolume}
+          onChange={handleVolumeChange}
+        />
+      </div>
     </div>
   );
 }
