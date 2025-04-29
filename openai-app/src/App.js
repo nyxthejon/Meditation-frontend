@@ -30,6 +30,11 @@ function App() {
   };
 
   const handleButtonClick = async () => {
+    if (bgAudioRef.current && bgAudioRef.current.paused) {
+      bgAudioRef.current.play().catch(() => {
+        console.warn('Playback prevented—user gesture required');
+      });
+    }
     setLoading(true);
     setError(null);
     setDisplayText("");
@@ -89,11 +94,7 @@ function App() {
       setLoading(false);
     }
 
-     if (bgAudioRef.current && bgAudioRef.current.paused) {
-         bgAudioRef.current.play().catch(() => {
-           console.warn('Playback prevented—user gesture required');
-         });
-       }
+    
   };
 
   // useEffect(() => {
